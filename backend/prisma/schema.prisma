@@ -1,0 +1,67 @@
+generator client {
+  provider     = "prisma-client-js"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Product{
+  id  String @id @default(uuid()) @db.Uuid
+  prod_name   String  @db.VarChar(50)
+  prod_description    String   @db.VarChar
+  prod_brand   String  @db.VarChar(50)
+  prod_price    Int   
+
+  items   CartItem[]
+
+  is_deleted Boolean @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model User{
+  id   String   @id  @default(uuid())  @db.Uuid
+  user_name   String  @db.VarChar(50)
+  user_email   String  @unique  @db.VarChar(50)
+  user_password   String
+
+  cart  Cart?
+
+  is_deleted Boolean @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Cart{
+  id  String @id  @default(uuid())    @db.Uuid
+  user_id String @unique @db.Uuid
+  user  User @relation(fields: [user_id], references: [id])
+
+  items  CartItem[] 
+
+  is_deleted Boolean @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+
+model CartItem{
+  id  String @id @default(uuid()) @db.Uuid
+  quantity  Int  @default(1)
+  
+  productId  String @db.Uuid
+  cartId   String  @db.Uuid
+
+  cart  Cart  @relation(fields:[cartId] , references: [id])
+  product Product @relation(fields: [productId] , references:[id])
+
+  is_deleted Boolean @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([cartId , productId])
+}
+
