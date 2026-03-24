@@ -1,0 +1,33 @@
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
+
+@Injectable()
+export class CartItemRepository {
+  constructor(private prisma: PrismaService) {}
+
+  findByCartAndProduct(cartId: string, productId: string) {
+    return this.prisma.cartItem.findFirst({
+        where: { cartId, productId, is_deleted: false }
+    });
+  }
+
+  create(cartId: string, productId: string, quantity: number) {
+    return this.prisma.cartItem.create({
+        data: { cartId, productId, quantity }
+    });
+  }
+
+  updateQuantity(id: string, quantity: number) {
+    return this.prisma.cartItem.update({
+        where: { id, is_deleted:false },
+        data: { quantity }
+    });
+  }
+
+  softDelete(id: string) {
+    return this.prisma.cartItem.update({
+        where: { id },
+        data: { is_deleted: true }
+    });
+  }
+}
