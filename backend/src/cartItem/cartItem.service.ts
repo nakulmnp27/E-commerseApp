@@ -24,6 +24,23 @@ export class CartItemService {
       dto.productId
     );
     if (!item) {
+      const existingItem = await this.itemRepo.findByCartAndProduct(
+        cart.id,
+        dto.productId,
+        true
+      );
+
+      if (existingItem) {
+        const restored = await this.itemRepo.restoreItem(
+          existingItem.id,
+          dto.quantity
+        );
+        return {
+          message: "Item added to cart successfully",
+          data: restored
+        };
+      }
+
         const created = await this.itemRepo.create(
             cart.id,
             dto.productId,
@@ -62,5 +79,15 @@ export class CartItemService {
         message: "Item removed from cart",
         data: deleted
     };
+    }
+
+    async findAll(userId: string){
+      const cart = await this.cartRepo.findByUserId(userId)
+
+      if (!cart) {
+        return []
+      }
+
+      return this.itemRepo.findall(cart.id)
     }
 }
