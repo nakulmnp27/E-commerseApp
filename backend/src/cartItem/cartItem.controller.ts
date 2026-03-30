@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Patch, UseGuards, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Param, Patch, UseGuards, Req, Get } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CartItemService } from "./cartItem.service";
 import { UpdateCartItemDto } from "./dto/update-cartItem.dto";
@@ -10,6 +10,11 @@ import { JwtAuthGuard } from "src/auth/jwt-guard";
 @UseGuards(JwtAuthGuard)
 export class CartItemController {
   constructor(private readonly service: CartItemService) {}
+
+  @Get()
+  findAll(@Req() req){
+    return this.service.findAll(req.user.userId)
+  }
 
   @Patch("update")
   updateItem(
