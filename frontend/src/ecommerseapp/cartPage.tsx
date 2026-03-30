@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -10,13 +10,7 @@ export default function CartPage() {
 
 async function fetchCart() {
   try {
-    const token = localStorage.getItem("token");
-
-    const res = await axios.get("http://localhost:4000/cart-item", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const res = await api.get("/cart-item");
 
     console.log("cart response", res.data);
 
@@ -28,16 +22,9 @@ async function fetchCart() {
 
 const updateQuantity = async (productId: string, quantity: number) => {
   try {
-    const token = localStorage.getItem("token");
-
-    await axios.patch(
-      "http://localhost:4000/cart-item/update",
+    await api.patch(
+      "/cart-item/update",
       { productId, quantity },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
     );
 
     fetchCart(); 
@@ -49,25 +36,12 @@ const updateQuantity = async (productId: string, quantity: number) => {
 
 const removeItem = async (productId: string) => {
   try {
-    const token = localStorage.getItem("token");
-
-    await axios.delete(
-      `http://localhost:4000/cart-item/remove/${productId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      }
-    );
+    await api.delete(`/cart-item/remove/${productId}`);
 
     fetchCart();
   } catch (err) {
     console.log("remove error", err);
-  };
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
+  }
 }
 
 

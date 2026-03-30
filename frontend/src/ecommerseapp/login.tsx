@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { setAccessToken, setRefreshToken } from "../api";
 
 
 export default function LoginPage() {
@@ -37,12 +38,15 @@ export default function LoginPage() {
     if (!validate()) return;
 
     try {
-      const res = await axios.post("http://localhost:4000/auth/login", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
         user_email: email,
         user_password: password
+      }, {
+        withCredentials:true
       });
 
-      localStorage.setItem("token", res.data.access_token);
+      setAccessToken(res.data.access_token);
+      setRefreshToken(res.data.refresh_token);
 
       console.log("Login success", res.data);
       setMessage(res.data.message)

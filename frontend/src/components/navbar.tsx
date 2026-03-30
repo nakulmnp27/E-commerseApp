@@ -1,11 +1,31 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { JSX } from "react"
-import { NavLink } from "react-router-dom"
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import "./navbar.css"
+import api, { clearAuthTokens } from "../api"
 
 export default function Navbar(): JSX.Element {
   const [open, setOpen] = useState(false)
-  const [login, setLogin] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, [location.pathname]);
+
+  const handleLogout = async ()=> {
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.log("logout error", error);
+    } finally {
+      clearAuthTokens();
+      setIsLoggedIn(false);
+      navigate("/login");
+    }
+  };
 
   return (
     <>
@@ -43,9 +63,10 @@ export default function Navbar(): JSX.Element {
             </ul>
 
             <div className="rightBtns flex items-center gap-2 mt-4 lg:mt-0">
+              {!isLoggedIn ? 
                 <NavLink to="/login">
                 <button className="w-full bg-black text-white p-3 rounded-lg mb-6 hover:opacity-90"> Login </button>
-                </NavLink>
+                </NavLink> : <button className="w-full bg-black text-white p-3 rounded-lg mb-6 hover:opacity-90" onClick={handleLogout}> Logout </button>}
             </div>
 
           </div>

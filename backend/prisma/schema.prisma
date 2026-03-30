@@ -28,6 +28,8 @@ model User{
   user_email   String  @unique  @db.VarChar(50)
   user_password   String
 
+  hash_refresh_token  String?
+
   cart  Cart?
 
   is_deleted Boolean @default(false)
