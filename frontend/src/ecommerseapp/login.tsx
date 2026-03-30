@@ -38,7 +38,7 @@ export default function LoginPage() {
     if (!validate()) return;
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}auth/login`, {
         user_email: email,
         user_password: password
       }, {

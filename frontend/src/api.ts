@@ -35,10 +35,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
 	(res) => res,
 	async (err) => {
-		const originalRequest = err.config;
+		const original = err.config;
 
-		if (err.response?.status === 401 && !originalRequest._retry) {
-			originalRequest._retry = true;
+		if (err.response?.status === 401 && !original._retry) {
+			original._retry = true;
 
 			try {
 				if (!refreshToken) {
@@ -62,9 +62,9 @@ api.interceptors.response.use(
 					setRefreshToken(newRefreshToken);
 				}
 
-				originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+				original.headers.Authorization = `Bearer ${newAccessToken}`;
 
-				return api(originalRequest);
+				return api(original);
 			} catch (refreshErr) {
                 alert("Session expired. Please login again");
 				clearAuthTokens();

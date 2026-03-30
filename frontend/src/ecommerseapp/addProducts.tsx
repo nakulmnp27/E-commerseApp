@@ -1,5 +1,5 @@
 import { useState, type JSX } from "react";
-import axios from "axios";
+import api from "../api";
 
 type AddProductProps = {
     onClose?: () => void;
@@ -37,7 +37,7 @@ export default function AddProduct({ onClose, onSuccess }: AddProductProps): JSX
 
         try {
             setLoading(true);
-            await axios.post("http://localhost:4000/product", {
+            await api.post("product", {
                 prod_name: prodName,
                 prod_description: prodDescription,
                 prod_brand: prodBrand,
