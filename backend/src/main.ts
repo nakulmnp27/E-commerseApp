@@ -34,8 +34,11 @@ const config = new DocumentBuilder()
 const document = SwaggerModule.createDocument(app, config)
 SwaggerModule.setup('docs', app, document)
 
-    app.enableCors({
-    origin: "http://localhost:5173",
+  app.enableCors({
+    origin: [
+      "http://localhost:5173",
+      "https://ecommerseapp27.netlify.app"
+    ],
     credentials: true
   });
 
